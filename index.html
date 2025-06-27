@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Command Prompt (Llama)</title>
+  <style>
+    body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+    #output { background: #f5f5f5; padding: 15px; margin-top: 10px; white-space: pre-wrap; }
+    button { padding: 8px 15px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+    input { width: 70%; padding: 8px; }
+    .local-mode { color: #d35400; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>AI Command Generator (Local Llama)</h1>
+  <input type="text" id="userInput" placeholder="What do you want to do? (e.g., list files)">
+  <button onclick="generateCommand()">Generate</button>
+  <div id="output"></div>
+  <div class="local-mode">
+    <strong>Note:</strong> Requires Ollama running locally (<code>ollama serve</code>)
+  </div>
+
+  <script>
+  async function generateCommand() {
+    const userInput = document.getElementById('userInput').value;
+    const outputDiv = document.getElementById('output');
+    
+    outputDiv.textContent = "Checking Ollama...";
+
+    try {
+      // First verify Ollama is reachable
+      const health = await fetch('http://localhost:11434', {
+        method: 'HEAD',
+        cache: 'no-store'
+      });
+      
+      if (!health.ok) throw new Error("Ollama not running");
+
+      // Then make the actual request
+      const response = await fetch('http://localhost:11434/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: "llama3",
+          prompt: `You are a command-line expert. Reply ONLY with the command for: ${userInput}`,
+          stream: false
+        })
+      });
+
+      const data = await response.json();
+      outputDiv.textContent = `🔧 Command:\n${data.response}`;
+    } catch (error) {
+      outputDiv.innerHTML = `
+        <div style="color:red;">
+          <strong>Error:</strong> ${error.message}<br><br>
+          <strong>Fix:</strong>
+          <ol>
+            <li>Open <strong>terminal</strong></li>
+            <li>Run: <code>ollama serve</code></li>
+            <li>Refresh this page</li>
+          </ol>
+          <img src="https://i.imgur.com/terminal-screenshot.png" width="400">
+        </div>
+      `;
+    }
+  }
+</script>
+</body>
+</html>
