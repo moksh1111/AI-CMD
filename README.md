@@ -36,7 +36,7 @@ ollama pull llama3
 ### 1. 🧬 Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/ai-cmd.git
+git clone https://github.com/moksh1111/ai-cmd
 cd ai-cmd
 ```
 
