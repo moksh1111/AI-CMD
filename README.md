@@ -126,10 +126,3 @@ The app will:
 * Run it
 * Show the output on screen
 
----
-
-Let me know if you'd like to include:
-
-* A screenshot of the UI
-* A deployment guide for Railway/Heroku
-* Badges (like Python version, license, last updated, etc.)
